@@ -8,6 +8,7 @@ const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const { DefinePlugin } = require( 'webpack' );
 const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
+const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
 
 /**
  * WordPress dependencies
@@ -236,6 +237,9 @@ const webpackConfig = {
 				transform: ( content ) => content,
 			} ) )
 		),
+		new MomentTimezoneDataPlugin( {
+			startYear: 2000,
+		} ),
 	],
 };
 
