@@ -4,3 +4,5 @@ export { useSettings } from './settings/use-settings';
 
 export { PLUGINS_STORE_NAME } from './plugins';
 export { withPluginsHydration } from './plugins/with-plugins-hydration';
+
+export { OPTIONS_STORE_NAME } from './options';
