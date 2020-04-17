@@ -11,7 +11,7 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { updateQueryString } from '@woocommerce/navigation';
-import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -240,15 +240,6 @@ export default compose(
 			'wc-api'
 		);
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
-		const { getOptions, isOptionsRequesting, getOptionsError } = select( OPTIONS_STORE_NAME );
-
-		const { blogdescription } = getOptions( [
-			'blogdescription'
-		] );
-
-		console.log( 'blogdescription ', blogdescription );
-		console.log( 'isOptionsRequesting ', isOptionsRequesting() );
-		console.log( 'getOptionsError ', getOptionsError() );
 
 		const notesQuery = {
 			page: 1,
