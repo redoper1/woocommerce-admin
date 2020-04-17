@@ -9,3 +9,17 @@ export function recieveOptions( options ) {
         options,
     };
 }
+
+export function setIsRequesting( isRequesting ) {
+	return {
+		type: TYPES.SET_IS_REQUESTING,
+		isRequesting,
+	};
+}
+
+export function setError( error ) {
+	return {
+		type: TYPES.SET_ERROR,
+		error,
+	};
+}

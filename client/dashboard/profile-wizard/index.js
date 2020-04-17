@@ -240,13 +240,15 @@ export default compose(
 			'wc-api'
 		);
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
-		const { getOptions } = select( OPTIONS_STORE_NAME );
+		const { getOptions, isOptionsRequesting, getOptionsError } = select( OPTIONS_STORE_NAME );
 
 		const { blogdescription } = getOptions( [
 			'blogdescription'
 		] );
 
-		console.log( blogdescription );
+		console.log( 'blogdescription ', blogdescription );
+		console.log( 'isOptionsRequesting ', isOptionsRequesting() );
+		console.log( 'getOptionsError ', getOptionsError() );
 
 		const notesQuery = {
 			page: 1,
