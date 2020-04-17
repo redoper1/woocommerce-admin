@@ -10,13 +10,13 @@ import { controls } from '@wordpress/data-controls';
  */
 import { STORE_NAME } from './constants';
 import * as selectors from './selectors';
-// import * as actions from './actions';
+import * as actions from './actions';
 import * as resolvers from './resolvers';
 import reducer from './reducer';
 
 registerStore( STORE_NAME, {
 	reducer,
-	// actions,
+	actions,
 	controls,
 	selectors,
 	resolvers,
