@@ -2,7 +2,7 @@
  * External Dependencies
  */
 
-import { select } from '@wordpress/data-controls';
+import { select } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -10,6 +10,7 @@ import { select } from '@wordpress/data-controls';
 import { STORE_NAME } from './constants';
 
 /**
+ * Get options from state tree.
  * 
  * @param {Object} state - Option names
  * @param {Array} names - Option names
@@ -17,7 +18,7 @@ import { STORE_NAME } from './constants';
 export const getOptions = ( state, names ) => {
     // if the options aren't in state, then call on the selector that has a resolver.
     if ( names.some( name => ! state[ name ] ) ) {
-        return requestOptions( state, names );
+        return select( STORE_NAME ).requestOptions( names );
     }
 
     return names.reduce( ( result, name ) => {
@@ -26,6 +27,12 @@ export const getOptions = ( state, names ) => {
     }, {} );
 }
 
+/**
+ * Get options from state tree or make a request if unresolved.
+ * 
+ * @param {Object} state - Option names
+ * @param {Array} names - Option names
+ */
 export const requestOptions = ( state, names ) => {
     return names.reduce( ( result, name ) => {
         result[ name ] = state[ name ];
