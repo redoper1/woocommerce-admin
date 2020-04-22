@@ -18,36 +18,30 @@ import {
 	withOptionsHydration,
 } from '@woocommerce/data';
 
-let PossiblyHydratedProfileWizard = ProfileWizard;
-
-if (
-	window.wcSettings.preloadSettings &&
-	window.wcSettings.preloadSettings.general
-) {
-	PossiblyHydratedProfileWizard = withSettingsHydration( 'general', {
-		general: window.wcSettings.preloadSettings.general,
-	} )( PossiblyHydratedProfileWizard );
-}
-
-if ( window.wcSettings.plugins ) {
-	PossiblyHydratedProfileWizard = withPluginsHydration( {
-		...window.wcSettings.plugins,
-		jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
-	} )( PossiblyHydratedProfileWizard );
-}
-
-if ( window.wcSettings.preloadOptions ) {
-	PossiblyHydratedProfileWizard = withOptionsHydration( {
-		...window.wcSettings.preloadOptions,
-	} )( PossiblyHydratedProfileWizard );
-}
+const HydratedProfileWizard = compose(
+	withSettingsHydration( 'general', {
+		general:
+			( window.wcSettings.preloadSettings &&
+				window.wcSettings.preloadSettings.general ) ||
+			{},
+	} ),
+	withPluginsHydration( {
+		...( window.wcSettings.plugins || {} ),
+		jetpackStatus:
+			window.wcSettings.dataEndpoints &&
+			window.wcSettings.dataEndpoints.jetpackStatus,
+	} ),
+	withOptionsHydration( {
+		...( window.wcSettings.preloadOptions || {} ),
+	} )
+)( ProfileWizard );
 
 class Dashboard extends Component {
 	render() {
 		const { path, profileItems, query } = this.props;
 
 		if ( isOnboardingEnabled() && ! profileItems.completed ) {
-			return <PossiblyHydratedProfileWizard query={ query } />;
+			return <HydratedProfileWizard query={ query } />;
 		}
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {

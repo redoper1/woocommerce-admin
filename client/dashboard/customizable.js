@@ -36,15 +36,18 @@ import {
 } from 'lib/date';
 import ReportFilters from 'analytics/components/report-filters';
 
-let HydratedTaskList = withPluginsHydration( {
-	...window.wcSettings.plugins,
-	jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
-} )( TaskList );
-if ( window.wcSettings.preloadOptions ) {
-	HydratedTaskList = withOptionsHydration( {
-		...window.wcSettings.preloadOptions,
-	} )( HydratedTaskList );
-}
+const HydratedTaskList = compose(
+	withPluginsHydration( {
+		...( window.wcSettings.plugins || {} ),
+		jetpackStatus:
+			window.wcSettings.dataEndpoints &&
+			window.wcSettings.dataEndpoints.jetpackStatus,
+	} ),
+	withOptionsHydration( {
+		...( window.wcSettings.preloadOptions || {} ),
+	} )
+)( TaskList );
+
 const DASHBOARD_FILTERS_FILTER = 'woocommerce_admin_dashboard_filters';
 const filters = applyFilters( DASHBOARD_FILTERS_FILTER, [] );
 
