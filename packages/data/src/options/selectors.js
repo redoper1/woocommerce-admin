@@ -55,5 +55,23 @@ export const isGetOptionsRequesting = ( state ) => {
  * @param {Object} state - Reducer state
  */
 export const getOptionsRequestingError = ( state ) => {
-	return state.error || false;
+	return state.requestingError || false;
+};
+
+/**
+ * Determine if options are being updated.
+ *
+ * @param {Object} state - Reducer state
+ */
+export const isUpdateOptionsRequesting = ( state ) => {
+	return state.isUpdating || false;
+};
+
+/**
+ * Determine if an options update resulted in an error.
+ *
+ * @param {Object} state - Reducer state
+ */
+export const getOptionsUpdatingError = ( state ) => {
+	return state.updatingError || false;
 };

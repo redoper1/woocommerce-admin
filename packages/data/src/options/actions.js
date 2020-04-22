@@ -24,15 +24,30 @@ export function setIsRequesting( isRequesting ) {
 	};
 }
 
-export function setError( error ) {
+export function setRequestingError( error ) {
 	return {
-		type: TYPES.SET_ERROR,
+		type: TYPES.SET_REQUESTING_ERROR,
 		error,
 	};
 }
 
+export function setUpdatingError( error ) {
+	return {
+		type: TYPES.SET_UPDATING_ERROR,
+		error,
+	};
+}
+
+export function setIsUpdating( isUpdating ) {
+	return {
+		type: TYPES.SET_IS_UPDATING,
+		isUpdating,
+	};
+}
+
 export function* updateOptions( data ) {
-	yield setIsRequesting( true );
+	yield setIsUpdating( true );
+	yield recieveOptions( data );
 
 	try {
 		const results = yield apiFetch( {
@@ -41,11 +56,10 @@ export function* updateOptions( data ) {
 			data,
 		} );
 
-		// Add results to state or something and check for error.
-		yield setIsRequesting( false );
+		yield setIsUpdating( false );
 		return results;
 	} catch ( error ) {
-		yield setError( error );
+		yield setUpdatingError( error );
 		return error;
 	}
 }
