@@ -4,6 +4,11 @@
 import { Component } from '@wordpress/element';
 
 /**
+ * WooCommerce dependencies
+ */
+import { withOptionsHydration } from '@woocommerce/data';
+
+/**
  * Internal dependencies
  */
 import './style.scss';
@@ -26,4 +31,6 @@ class MarketingOverview extends Component {
 	}
 }
 
-export default MarketingOverview;
+export default withOptionsHydration( {
+	...( window.wcSettings.preloadOptions || {} ),
+} )( MarketingOverview );
