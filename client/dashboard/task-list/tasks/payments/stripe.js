@@ -18,7 +18,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { getQuery } from '@woocommerce/navigation';
 import { WCS_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -68,26 +68,7 @@ class Stripe extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const {
-			activePlugins,
-			createNotice,
-			isOptionsRequesting,
-			hasOptionsError,
-		} = this.props;
-
-		if ( prevProps.isOptionsRequesting && ! isOptionsRequesting ) {
-			if ( ! hasOptionsError ) {
-				this.completeMethod();
-			} else {
-				createNotice(
-					'error',
-					__(
-						'There was a problem saving your payment setings',
-						'woocommerce-admin'
-					)
-				);
-			}
-		}
+		const { activePlugins } = this.props;
 
 		if (
 			! prevProps.activePlugins.includes(
@@ -276,10 +257,10 @@ class Stripe extends Component {
 		);
 	}
 
-	updateSettings( values ) {
-		const { updateOptions, stripeSettings } = this.props;
+	async updateSettings( values ) {
+		const { updateOptions, stripeSettings, createNotice } = this.props;
 
-		updateOptions( {
+		const update = await updateOptions( {
 			woocommerce_stripe_settings: {
 				...stripeSettings,
 				publishable_key: values.publishable_key,
@@ -287,6 +268,18 @@ class Stripe extends Component {
 				enabled: 'yes',
 			},
 		} );
+
+		if ( update.status === 'failed' ) {
+			createNotice(
+				'error',
+				__(
+					'There was a problem saving your payment setings',
+					'woocommerce-admin'
+				)
+			);
+		} else {
+			this.completeMethod();
+		}
 	}
 
 	getInitialConfigValues() {
@@ -326,7 +319,7 @@ class Stripe extends Component {
 	}
 
 	renderManualConfig() {
-		const { isOptionsRequesting } = this.props;
+		const { isOptionsUpdating } = this.props;
 		const stripeHelp = interpolateComponents( {
 			mixedString: __(
 				'Your API details can be obtained from your {{docsLink}}Stripe account{{/docsLink}}.  Don’t have a Stripe account? {{registerLink}}Create one.{{/registerLink}}',
@@ -378,7 +371,7 @@ class Stripe extends Component {
 
 							<Button
 								isPrimary
-								isBusy={ isOptionsRequesting }
+								isBusy={ isOptionsUpdating }
 								onClick={ handleSubmit }
 							>
 								{ __( 'Proceed', 'woocommerce-admin' ) }
@@ -433,14 +426,14 @@ class Stripe extends Component {
 	}
 
 	render() {
-		const { installStep, isOptionsRequesting } = this.props;
+		const { installStep, isOptionsUpdating } = this.props;
 		const { isPending } = this.state;
 
 		return (
 			<Stepper
 				isVertical
 				isPending={
-					! installStep.isComplete || isOptionsRequesting || isPending
+					! installStep.isComplete || isOptionsUpdating || isPending
 				}
 				currentStep={ installStep.isComplete ? 'connect' : 'install' }
 				steps={ [ installStep, this.getConnectStep() ] }
@@ -451,11 +444,9 @@ class Stripe extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getOptions,
-			getOptionsError,
-			isUpdateOptionsRequesting,
-		} = select( 'wc-api' );
+		const { getOptions, isUpdateOptionsRequesting } = select(
+			OPTIONS_STORE_NAME
+		);
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
@@ -471,25 +462,19 @@ export default compose(
 			[ 'woocommerce_stripe_settings' ],
 			[]
 		);
-		const isOptionsRequesting = Boolean(
-			isUpdateOptionsRequesting( [ 'woocommerce_stripe_settings' ] )
-		);
-		const hasOptionsError = getOptionsError( [
-			'woocommerce_stripe_settings',
-		] );
+		const isOptionsUpdating = isUpdateOptionsRequesting();
 
 		return {
 			activePlugins: getActivePlugins(),
 			countryCode,
-			hasOptionsError,
 			isJetpackConnected: isJetpackConnected(),
-			isOptionsRequesting,
+			isOptionsUpdating,
 			stripeSettings,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		return {
 			createNotice,
 			updateOptions,
