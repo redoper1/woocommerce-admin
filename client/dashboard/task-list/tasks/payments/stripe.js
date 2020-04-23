@@ -5,7 +5,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import apiFetch from '@wordpress/api-fetch';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
 import { Button, Modal } from '@wordpress/components';
 import { get } from 'lodash';
@@ -17,7 +17,6 @@ import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { getQuery } from '@woocommerce/navigation';
 import { WCS_NAMESPACE } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
 import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
