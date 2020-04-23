@@ -7,7 +7,7 @@ import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import interpolateComponents from 'interpolate-components';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -15,7 +15,6 @@ import { withDispatch } from '@wordpress/data';
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
 import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 class PayPal extends Component {
